@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+:root {
+  --card-bg: rgba(15, 23, 42, 0.4);
+  --card-border: rgba(51, 65, 85, 0.5);
+  --field-bg: rgba(2, 6, 23, 0.4);
+  --field-border: rgba(51, 65, 85, 0.5);
+  --field-focus: rgba(56, 189, 248, 0.4);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: #020617;
+  color: #e2e8f0;
+  -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(
+      900px 500px at 20% 10%,
+      rgba(56, 189, 248, 0.12),
+      transparent
+    ),
+    radial-gradient(
+      900px 500px at 80% 20%,
+      rgba(168, 85, 247, 0.12),
+      transparent
+    ),
+    radial-gradient(
+      900px 500px at 40% 90%,
+      rgba(34, 197, 94, 0.1),
+      transparent
+    );
+}
+
+input,
+select,
+button {
+  font: inherit;
+}
+
+/* ─── LAYOUT ───────────────────────────────── */
+.container-app {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem;
+}
+
+/* ─── CARD ─────────────────────────────────── */
+.card {
+  border-radius: 1rem;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.card-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+/* ─── MUTED TEXT ───────────────────────────── */
+.muted {
+  color: #94a3b8;
+}
+
+/* ─── BUTTON ───────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: rgba(30, 41, 59, 1);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: rgba(14, 165, 233, 0.9);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #020617;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: rgba(14, 165, 233, 1);
+}
+
+.btn-danger {
+  background: rgba(244, 63, 94, 0.2);
+  border-color: rgba(251, 113, 133, 0.3);
+  color: #fecdd3;
+}
+
+.btn-danger:hover {
+  background: rgba(244, 63, 94, 0.3);
+}
+
+/* ─── INPUT / SELECT ───────────────────────── */
+.field,
+.select {
+  width: 100%;
+  border-radius: 0.75rem;
+  background: var(--field-bg);
+  border: 1px solid var(--field-border);
+  padding: 0.5rem 0.75rem;
+  color: #e2e8f0;
+  outline: none;
+  transition: all 0.15s;
+}
+
+.field:focus,
+.select:focus {
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 0 3px var(--field-focus);
+}
+
+/* ─── PILL / BADGE ─────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.pill-income {
+  border-color: rgba(52, 211, 153, 0.3);
+  background: rgba(16, 185, 129, 0.1);
+  color: #a7f3d0;
+}
+
+.pill-expense {
+  border-color: rgba(251, 113, 133, 0.3);
+  background: rgba(244, 63, 94, 0.1);
+  color: #fecdd3;
+}
