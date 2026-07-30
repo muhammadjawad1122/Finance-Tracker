@@ -37,6 +37,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// ─── ROOT ROUTE ─────────────────────────────────────────
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Finance Tracker API is running 🚀",
+  });
+});
+
 // ─── HEALTH CHECK ──────────────────────────────────────
 app.get("/api/health", (req, res) => {
   res.json({
