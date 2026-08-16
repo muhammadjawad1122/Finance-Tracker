@@ -9,6 +9,7 @@ import categoryRoutes from "./routes/category.routes.js";
 import transactionRoutes from "./routes/transaction.routes.js";
 import statsRoutes from "./routes/stats.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import aiRouter from "./routes/ai.js";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
 // ─── ROOT ROUTE ─────────────────────────────────────────
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -60,6 +62,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/ai", aiRouter);
 
 // ─── 404 HANDLER ───────────────────────────────────────
 app.use((req, res) => {
