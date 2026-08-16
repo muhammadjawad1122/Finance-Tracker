@@ -9,8 +9,8 @@ router.post("/ask", async (req, res) => {
   try {
     const { question } = req.body;
     
-    // Assignment uses "gemini-pro"
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
     
     const result = await model.generateContent(question);
     const response = await result.response;
