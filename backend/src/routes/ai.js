@@ -1,21 +1,26 @@
 import express from "express";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const router = express.Router();
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 router.post("/ask", async (req, res) => {
   try {
     const { question } = req.body;
-    
-    
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-    
-    const result = await model.generateContent(question);
-    const response = await result.response;
-    const text = response.text();
-    
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    // Using v1 endpoint (stable) instead of v1beta
+    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: question }] }],
+      }),
+    });
+
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "No answer";
+
     res.json({ answer: text });
   } catch (error) {
     console.error(error);
