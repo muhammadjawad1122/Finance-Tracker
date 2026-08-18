@@ -1,42 +1,33 @@
 import express from "express";
+import { GoogleGenAI } from "@google/genai";
 
 const router = express.Router();
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 router.post("/ask", async (req, res) => {
   try {
     const { question } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY;
 
-    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    if (!question) {
+      return res.status(400).json({ error: "question is required" });
+    }
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: question }] }],
-      }),
+    // Use Interactions API (same as your working Python code)
+    const interaction = await ai.interactions.create({
+      model: "gemini-2.5-flash",
+      input: question,
     });
 
-    const data = await response.json();
-
-    // Improved extraction with fallback
-    let text = "No answer received";
-    if (data.candidates && data.candidates[0]) {
-      const candidate = data.candidates[0];
-      if (candidate.content && candidate.content.parts && candidate.content.parts[0]) {
-        text = candidate.content.parts[0].text || "No text in response";
-      }
-    }
-
-    // If Gemini blocked it for safety, show that clearly
-    if (data.promptFeedback && data.promptFeedback.blockReason) {
-      text = `Blocked: ${data.promptFeedback.blockReason}`;
-    }
-
-    res.json({ answer: text, fullResponse: data }); // fullResponse helps debug
+    return res.json({
+      answer: interaction?.output_text || "No answer",
+    });
   } catch (error) {
-    console.error("AI Error:", error);
-    res.status(500).json({ error: "AI failed", details: error.message });
+    console.error("AI error:", error?.message || error);
+    return res.status(500).json({
+      error: "AI failed",
+      details: error?.message || "unknown",
+    });
   }
 });
 
