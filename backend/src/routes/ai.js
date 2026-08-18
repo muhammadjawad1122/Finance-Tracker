@@ -23,13 +23,13 @@ router.post("/ask", async (req, res) => {
       return res.status(400).json({ error: "question is required" });
     }
 
-    const interaction = await ai.interactions.create({
+    const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      input: question,
+      contents: question,
     });
 
     return res.json({
-      answer: interaction?.output_text || "No answer",
+      answer: response.text || "No answer",
     });
   } catch (error) {
     console.error("AI error:", error?.message || error);
@@ -37,6 +37,18 @@ router.post("/ask", async (req, res) => {
       error: "AI failed",
       details: error?.message || "unknown",
     });
+  }
+});
+
+router.post("/debug", async (req, res) => {
+  try {
+    const interaction = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: req.body?.question || "Hi",
+    });
+    res.json(interaction);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
