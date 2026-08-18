@@ -1,12 +1,22 @@
 import express from "express";
-import { GoogleGenAI } from "google-genai";
+import { GoogleGenAI } from "@google/genai";
 
 const router = express.Router();
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const apiKey = process.env.GEMINI_API_KEY;
+
+if (!apiKey) {
+  console.error("GEMINI_API_KEY is not set");
+}
+
+const ai = new GoogleGenAI({ apiKey: apiKey || "missing" });
 
 router.post("/ask", async (req, res) => {
   try {
+    if (!apiKey) {
+      return res.status(500).json({ error: "GEMINI_API_KEY not configured" });
+    }
+
     const { question } = req.body;
 
     if (!question) {
@@ -27,19 +37,6 @@ router.post("/ask", async (req, res) => {
       error: "AI failed",
       details: error?.message || "unknown",
     });
-  }
-});
-
-// Temporary debug route to see the raw response from Gemini
-router.post("/debug", async (req, res) => {
-  try {
-    const interaction = await ai.interactions.create({
-      model: "gemini-2.5-flash",
-      input: req.body?.question || "Hi",
-    });
-    res.json(interaction);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
 });
 
