@@ -24,7 +24,7 @@ router.post("/ask", async (req, res) => {
     }
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash", // 👈 changed
       contents: question,
     });
 
@@ -43,7 +43,7 @@ router.post("/ask", async (req, res) => {
 router.post("/debug", async (req, res) => {
   try {
     const interaction = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash", // 👈 changed
       contents: req.body?.question || "Hi",
     });
     res.json(interaction);
