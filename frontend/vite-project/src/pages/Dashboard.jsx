@@ -20,6 +20,10 @@ import { fetchSummary, fetchByCategory, fetchMonthly } from "../services/stats";
 import { updateMe } from "../services/user";
 import { formatMoney } from "../utils/money";
 
+// === AI ASSISTANT START ===
+// Import axios for AI backend call
+import axios from "axios";
+
 const monthLabel = (m) =>
   ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1];
 
@@ -48,6 +52,32 @@ export default function Dashboard() {
 
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
+
+  // === AI ASSISTANT START ===
+  // AI Assistant state
+  const [aiQuestion, setAiQuestion] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+
+  // AI Assistant handler
+  const handleAskAI = async () => {
+    if (!aiQuestion.trim()) return;
+    setAiLoading(true);
+    try {
+      const res = await axios.post(
+        "https://finance-tracker-production-a359.up.railway.app/api/ai/ask",
+        { question: aiQuestion },
+        { withCredentials: true }
+      );
+      setAiResponse(res.data.answer || "No answer received");
+    } catch (e2) {
+      setAiResponse("AI error: " + (e2.response?.data?.error || e2.message));
+    } finally {
+      setAiLoading(false);
+    }
+  };
+  // === AI ASSISTANT END ===
+
   const [currencyUpdating, setCurrencyUpdating] = useState(false);
 
   const [categories, setCategories] = useState([]);
@@ -306,6 +336,40 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* === AI ASSISTANT START === */}
+      {/* Finance AI Assistant - Ask questions about your transactions */}
+      <div className="card mt-4">
+        <div className="card-header">
+          <div className="font-bold">💬 Finance AI Assistant</div>
+          <div className="text-sm muted">Ask questions like: "How much did I spend?" or "What is my balance?"</div>
+        </div>
+        <div className="card-body">
+          <div className="flex gap-3">
+            <input
+              className="field flex-1"
+              type="text"
+              value={aiQuestion}
+              onChange={(e) => setAiQuestion(e.target.value)}
+              placeholder="Ask something about your finances..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleAskAI();
+              }}
+            />
+            <button className="btn btn-primary" onClick={handleAskAI} disabled={aiLoading}>
+              {aiLoading ? "Asking..." : "Ask AI"}
+            </button>
+          </div>
+
+          {aiResponse && (
+            <div className="mt-4 rounded-xl border border-slate-800/60 bg-slate-950/30 px-4 py-4">
+              <div className="font-semibold text-sm mb-2">AI Answer:</div>
+              <div className="text-sm leading-relaxed whitespace-pre-wrap">{aiResponse}</div>
+            </div>
+          )}
+        </div>
+      </div>
+      {/* === AI ASSISTANT END === */}
 
       {/* Add transaction */}
       <div className="card mt-4">
